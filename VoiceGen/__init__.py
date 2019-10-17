@@ -61,12 +61,12 @@ class Generator:
         vocoder.infer_waveform(mel, target=200, overlap=50, progress_callback=no_action)
         print("All test passed! You can now synthesize speech.\n\n")
 
-    def generate(self, in_fpath, text, out_fpath):
+    def generate_voice(self, in_fpath, text, out_fpath):
         try:
             preprocessed_wav = encoder.preprocess_wav(in_fpath)
             original_wav, sampling_rate = librosa.load(in_fpath)
             preprocessed_wav = encoder.preprocess_wav(original_wav, sampling_rate)
-            print("Loaded file succesfully")
+            print("Loaded file successfully")
 
             embed = encoder.embed_utterance(preprocessed_wav)
             print("Created the embedding")
@@ -82,14 +82,10 @@ class Generator:
             print("Synthesizing the waveform:")
             generated_wav = vocoder.infer_waveform(spec)
 
-            generated_wav = np.pad(generated_wav, (0, self..synthesizer.sample_rate), mode="constant")
-
-
+            generated_wav = np.pad(generated_wav, (0, self.synthesizer.sample_rate), mode="constant")
             librosa.output.write_wav(out_fpath, generated_wav.astype(np.float32),
                                      self.synthesizer.sample_rate)
-
             print("\nSaved output as %s\n\n" % out_fpath)
-
 
         except Exception as e:
             print("Caught exception: %s" % repr(e))
