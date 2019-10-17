@@ -57,8 +57,10 @@ class Chat:
         if self.sample() is None:
             context.bot.send_message(chat_id=update.message.chat_id, text="No audio sample file provided")
             return
+        print(self.sample())
+        context.bot.send_message(chat_id=update.message.chat_id, text="Processing... Wait!!!")
 
-        context.bot.send_message(chat_id=update.message.chat_id, text="Just ffff")
+
 
     def handle_message_audio(self, update, context):
         print("Processing audio: %d - %s..." % (update.message.chat_id, update.message.audio))
@@ -67,7 +69,9 @@ class Chat:
         sample_path = self.income_dir.joinpath("sample.flac")
 
         response = requests.get(file.file_path)
-        with sample_path.open('w') as sample:
-            sample.write(response.raw.data)
+        with sample_path.open('wb') as sample:
+            sample.write(response.content)
 
-        context.bot.send_message(chat_id=update.message.chat_id, text="Just audio")
+        context.bot.send_message(chat_id=update.message.chat_id, text="Got File")
+        context.bot.send_message(chat_id=update.message.chat_id, text="Write a sentence (+-20 words) to be synthesized")
+
