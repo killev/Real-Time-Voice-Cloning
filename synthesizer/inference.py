@@ -14,7 +14,7 @@ import librosa
 class Synthesizer:
     sample_rate = hparams.sample_rate
     hparams = hparams
-    
+
     def __init__(self, checkpoints_dir: Path, verbose=True, low_mem=False):
         """
         Creates a synthesizer ready for inference. The actual model isn't loaded in memory until
@@ -36,10 +36,24 @@ class Synthesizer:
         if checkpoint_state is None:
             raise Exception("Could not find any synthesizer weights under %s" % checkpoints_dir)
         self.checkpoint_fpath = checkpoint_state.model_checkpoint_path
+        
+        if not self._low_mem:
+            #session = self.create_session()
+            tf.reset_default_graph()
+            self._model = Tacotron2(self.checkpoint_fpath, hparams, session=None)
+        
         if verbose:
             model_name = checkpoints_dir.parent.name.replace("logs-", "")
             step = int(self.checkpoint_fpath[self.checkpoint_fpath.rfind('-') + 1:])
             print("Found synthesizer \"%s\" trained to step %d" % (model_name, step))
+
+    def create_session(self):
+        #Memory allocation on the GPUs as needed
+        config = tf.ConfigProto()
+        config.gpu_options.allow_growth = True
+        config.allow_soft_placement = True
+        
+        return tf.Session(config=config)
      
     def is_loaded(self):
         """
@@ -55,7 +69,7 @@ class Synthesizer:
         if self._low_mem:
             raise Exception("Cannot load the synthesizer permanently in low mem mode")
         tf.reset_default_graph()
-        self._model = Tacotron2(self.checkpoint_fpath, hparams)
+        self._model = Tacotron2(self.checkpoint_fpath, hparams, session=self.session)
             
     def synthesize_spectrograms(self, texts: List[str],
                                 embeddings: Union[np.ndarray, List[np.ndarray]],

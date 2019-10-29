@@ -9,7 +9,7 @@ import os
 
 
 class Tacotron2:
-    def __init__(self, checkpoint_path, hparams, gta=False, model_name="Tacotron"):
+    def __init__(self, checkpoint_path, hparams, session, gta=False, model_name="Tacotron"):
         log("Constructing model: %s" % model_name)
         #Force the batch size to be known in order to use attention masking in batch synthesis
         inputs = tf.placeholder(tf.int32, (None, None), name="inputs")
@@ -57,6 +57,7 @@ class Tacotron2:
         config.allow_soft_placement = True
         
         self.session = tf.Session(config=config)
+        #self.session = session
         self.session.run(tf.global_variables_initializer())
         
         saver = tf.train.Saver()
