@@ -24,6 +24,8 @@ if __name__ == '__main__':
     generator.initialize()
 
     print("Starting bot...\n")
+    if not args.user or not args.password:
+        print("Both user and password should be provided")
 
     botRoot = Path("../ChatBotData/")
 
