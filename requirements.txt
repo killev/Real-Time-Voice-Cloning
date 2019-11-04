@@ -13,5 +13,7 @@ inflect
 PyQt5
 multiprocess
 numba
-python-telegram-bot
 requests
+torch
+torchvision
+fbchat
