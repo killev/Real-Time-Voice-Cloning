@@ -26,6 +26,7 @@ if __name__ == '__main__':
     print("Starting bot...\n")
     if not args.user or not args.password:
         print("Both user and password should be provided")
+        exit(-1)
 
     botRoot = Path("../ChatBotData/")
 
