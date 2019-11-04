@@ -94,7 +94,7 @@ class Chat:
         print("Processing text: %s ..." % message.text)
         sample_path = self.sample()
         if sample_path is None:
-            send(Message(text="No sample uploaded... Send and audio to me"))
+            send(Message(text="No sample uploaded... Send any sample audio file in .flac format to me"))
             return
         print(sample_path)
         send(Message(text="Processing... Wait!!!"))
